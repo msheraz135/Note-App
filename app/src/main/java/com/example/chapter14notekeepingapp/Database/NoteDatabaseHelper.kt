@@ -38,12 +38,11 @@ To use this database:
 3.	Execute SQL queries to create, read, update, and delete notes using the defined table structure.
  */
 
-class NoteDatabaseHelper(context: Context)
-    : SQLiteOpenHelper(context, DATABASE_NAME,null, DATABASE_VERSION)
-{
+class NoteDatabaseHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     override fun onCreate(db: SQLiteDatabase?) {
 
-        val query="CREATE TABLE $TABLE_NOTES (" +
+        val query = "CREATE TABLE $TABLE_NOTES (" +
                 "$KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "$KEY_TITLE TEXT, " +
                 "$KEY_DESCRIPTION TEXT," +
@@ -70,6 +69,7 @@ class NoteDatabaseHelper(context: Context)
         public const val KEY_IMPORTANT = "important"
         public const val KEY_TODO = "todo"
     }
+
     fun insertNotes(note: Note) {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
@@ -84,25 +84,47 @@ class NoteDatabaseHelper(context: Context)
         db.insert(TABLE_NOTES, null, contentValues)
         //db.close()
     }
-    fun getNotes():List<Note>
-    {
+
+    fun getNotes(): MutableList<Note> {
         val db = this.readableDatabase
-        val cursor = db.query(TABLE_NOTES, null,null,null,null,null,null)
+        val cursor = db.query(TABLE_NOTES, null, null, null, null, null, null)
         val notes = mutableListOf<Note>() // note ==3 note
-        while (cursor.moveToNext())
-        {
+        while (cursor.moveToNext()) {
             val id = cursor.getInt(0)
             val title = cursor.getString(1)
             val description = cursor.getString(2)
             val todo = cursor.getInt(3) == 1
-            val important  =  cursor.getInt(4)==1 // 1==1
-            val idea = cursor.getInt(5)==1
-            val note = Note(id, title, description, todo, important,idea)
+            val important = cursor.getInt(4) == 1 // 1==1
+            val idea = cursor.getInt(5) == 1
+            val note = Note(id, title, description, todo, important, idea)
             notes.add(note)
-            }
+        }
         cursor.close()
         //db.close()
         return notes
+    }
+
+    fun deleteNote(note: Note): Int {
+        val db = this.writableDatabase
+        val rowsAffected = db.delete(TABLE_NOTES, "$KEY_ID=?", arrayOf(note.id.toString()))
+        //db.close()
+        return rowsAffected
+    }
+
+    fun updateNote(note: Note): Int {
+        val db = this.writableDatabase
+        val values = ContentValues()
+
+        values.put(KEY_TITLE, note.title)
+        values.put(KEY_DESCRIPTION, note.description)
+        values.put(KEY_IDEA, if (note.idea) 1 else 0)
+        values.put(KEY_IMPORTANT, if (note.important) 1 else 0)
+        values.put(KEY_TODO, if (note.todo) 1 else 0)
+
+        val rowsAffected = db.update(TABLE_NOTES, values, "$KEY_ID=?", arrayOf(note.id.toString()))
+        //db.close()
+
+        return rowsAffected
     }
 }
 

@@ -5,7 +5,7 @@ import android.content.Context
 import com.example.chapter14notekeepingapp.data.Note
 
 class CRUD(context: Context) {
- lateinit var dbhelper : NoteDatabaseHelper
+    lateinit var dbhelper: NoteDatabaseHelper
 
     init {
         dbhelper = NoteDatabaseHelper(context)
@@ -21,17 +21,16 @@ class CRUD(context: Context) {
         values.put(NoteDatabaseHelper.KEY_IMPORTANT, if (note.important) 1 else 0)
         values.put(NoteDatabaseHelper.KEY_TODO, if (note.todo) 1 else 0)
 
-        val rowsAffected = db.update(NoteDatabaseHelper.TABLE_NOTES, values, "$NoteDatabaseHelper.KEY_ID=?", arrayOf(note.id.toString()))
+        val rowsAffected = db.update(
+            NoteDatabaseHelper.TABLE_NOTES,
+            values,
+            "$NoteDatabaseHelper.KEY_ID=?",
+            arrayOf(note.id.toString())
+        )
         db.close()
 
         return rowsAffected
     }
 
-    fun deleteNote(note: Note): Int {
-        val db = dbhelper.writableDatabase
-        val rowsAffected = db.delete(NoteDatabaseHelper.TABLE_NOTES, "$NoteDatabaseHelper.KEY_ID=?", arrayOf(note.id.toString()))
-        db.close()
 
-        return rowsAffected
-    }
 }

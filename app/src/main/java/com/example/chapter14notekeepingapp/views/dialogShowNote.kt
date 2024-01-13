@@ -26,14 +26,16 @@ class dialogShowNote : DialogFragment() {
         textViewTitle.text = note?.title
         textViewDes.text = note?.description
         if (!(note!!.important)) {
-            textViewImportant.visibility = View.GONE
+            textViewImportant.visibility = View.INVISIBLE
         }
-        if (!note!!.todo) {
-            textViewTodo.visibility = View.GONE
+        else{
+            textViewImportant.visibility = View.VISIBLE
         }
-        if (!note!!.idea) {
-            textViewIdea.visibility = View.GONE
-        }
+        textViewTodo.visibility = if (note?.todo == true) View.VISIBLE else View.INVISIBLE
+        textViewIdea.visibility = if (note?.idea == true) View.VISIBLE else View.INVISIBLE
+//        if (!note!!.idea) {
+//            textViewIdea.visibility = View.GONE
+//        }
         val btnOk = dialogView.findViewById<Button>(R.id.btnOKFromShow)
 
         builder.setView(dialogView).setMessage("Show Note")
