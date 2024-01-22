@@ -1,4 +1,4 @@
-package com.example.chapter14notekeepingapp
+package com.example.chapter14notekeepingapp.adapters
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

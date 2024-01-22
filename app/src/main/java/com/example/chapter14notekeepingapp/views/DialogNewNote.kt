@@ -12,6 +12,8 @@ import com.example.chapter14notekeepingapp.R
 import com.example.chapter14notekeepingapp.data.Note
 
 class DialogNewNote : DialogFragment() {
+    var reciveNote: Note? = null
+    var recivBoolean : Boolean = false
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -20,6 +22,7 @@ class DialogNewNote : DialogFragment() {
         val dialogView = inflater.inflate(R.layout.dialog_new_note, null)
 
         val textTitle = dialogView.findViewById(R.id.editTitle) as EditText
+
         val textDes = dialogView.findViewById(R.id.editDescription) as EditText
         val checkBoxTodo = dialogView.findViewById(R.id.checkBoxTodo) as CheckBox
         val checkBoxIdea = dialogView.findViewById(R.id.checkBoxIdea) as CheckBox
@@ -35,7 +38,7 @@ class DialogNewNote : DialogFragment() {
                     .count { it.isChecked } // Count the checked boxes directly
                 btnOk.isEnabled = checkCount==1
                 btnOk.text= when{
-                    checkCount ==1 -> "OK"
+                    checkCount ==1 ->  "OK"
                     checkCount>1 ->  "select 1 Checkbox"
                     else -> "Select a check Box"
                 }
@@ -49,20 +52,38 @@ class DialogNewNote : DialogFragment() {
             {
                 Toast.makeText(requireActivity(), "Please select a checkbox to enable the OK button", Toast.LENGTH_SHORT).show()
             }
-            val NewNote = Note()
-            NewNote.title = textTitle.text.toString()
-            NewNote.description = textDes.text.toString()
-            NewNote.idea = checkBoxIdea.isChecked
-            NewNote.important = checkBoxImportant.isChecked
-            NewNote.todo = checkBoxTodo.isChecked
+            if(false)//run new note
+            {
+                val NewNote = Note()
+                NewNote.title = textTitle.text.toString()
+                NewNote.description = textDes.text.toString()
+                NewNote.idea = checkBoxIdea.isChecked
+                NewNote.important = checkBoxImportant.isChecked
+                NewNote.todo = checkBoxTodo.isChecked
 
-            val callingActivity = requireActivity() as MainActivity
-            callingActivity.createNewNote(NewNote)
-            dismiss()
+                val callingActivity = requireActivity() as MainActivity
+                callingActivity.createNewNote(NewNote)
+                dismiss()
+            }
+            else{ //run update note
+                 val get = reciveNote?.title
+                textTitle.setText(get)
+
+
+                recivBoolean = true
+                dismiss()
+            }
+
         }
         return builder.create()
 
 
+
+    }
+    fun sendnote(note: Note, check:Boolean)//RECIVE AND SET NOTE
+    {
+        reciveNote = note
+        recivBoolean = check
     }
 
 }

@@ -27,7 +27,7 @@ class CRUD(context: Context) {
             "$NoteDatabaseHelper.KEY_ID=?",
             arrayOf(note.id.toString())
         )
-        db.close()
+        //db.close()
 
         return rowsAffected
     }

@@ -1,6 +1,6 @@
 package com.example.chapter14notekeepingapp.views
 
-import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chapter14notekeepingapp.Database.NoteDatabaseHelper
 import com.example.chapter14notekeepingapp.R
-import com.example.chapter14notekeepingapp.SwipeToDeleteCallback
+import com.example.chapter14notekeepingapp.adapters.SwipeToDeleteCallback
 import com.example.chapter14notekeepingapp.adapters.NoteAdapter
 import com.example.chapter14notekeepingapp.data.Note
 import com.example.chapter14notekeepingapp.databinding.ActivityMainBinding
@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var noteAdapter: NoteAdapter? = null
     private var noteList = mutableListOf<Note>()
+    private var showDividers: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,11 +51,20 @@ class MainActivity : AppCompatActivity() {
         val layoutManger = LinearLayoutManager(applicationContext)
         recyclerView!!.layoutManager = layoutManger
         recyclerView!!.itemAnimator = DefaultItemAnimator()
-        recyclerView!!.addItemDecoration(
-            DividerItemDecoration(
-                this, LinearLayoutManager.VERTICAL
+
+        if(showDividers)
+        {
+            recyclerView!!.addItemDecoration(
+                DividerItemDecoration(
+                    this, LinearLayoutManager.VERTICAL
+                )
             )
-        )
+        }
+        else{
+            if (recyclerView!!.itemDecorationCount > 0)
+                recyclerView!!.removeItemDecorationAt(0)
+        }
+
         recyclerView!!.adapter = noteAdapter
         val itemTouchHelper: ItemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(noteAdapter!!,this))
         itemTouchHelper.attachToRecyclerView(recyclerView)
@@ -72,6 +82,13 @@ class MainActivity : AppCompatActivity() {
             val dialog = DialogNewNote()
             dialog.show(supportFragmentManager, "")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val pref = getSharedPreferences("note keeping app", Context.MODE_PRIVATE)
+        showDividers = pref.getBoolean("dividers", true)
+
     }
 
     private fun dummyDatainList() {
@@ -180,6 +197,8 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
 
 
 }

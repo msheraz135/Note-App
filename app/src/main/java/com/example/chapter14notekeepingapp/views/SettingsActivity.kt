@@ -2,6 +2,7 @@ package com.example.chapter14notekeepingapp.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.chapter14notekeepingapp.R
@@ -9,9 +10,9 @@ import com.example.chapter14notekeepingapp.databinding.ActivityMainBinding
 import com.example.chapter14notekeepingapp.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
+
     lateinit var binding :ActivitySettingsBinding
     private var showDividers: Boolean = true
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,18 +21,24 @@ class SettingsActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("note keeping app", Context.MODE_PRIVATE)
         showDividers = prefs.getBoolean("dividers", true)
-        val switch = binding.switch1
 
-        switch.isChecked=true
+        val switch = binding.switch1
+        switch.isChecked = showDividers
 
         switch.setOnCheckedChangeListener { _, isChecked ->
             showDividers= isChecked
+
+
         }
 
         }
 
     override fun onPause() {
         super.onPause()
+        val pref = getSharedPreferences("note keeping app", Context.MODE_PRIVATE)
+        val editor = pref.edit()
+        editor.putBoolean("dividers",showDividers)
+        editor.apply()
     }
 
     }

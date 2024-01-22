@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Chapter14NoteKeepingApp"
         tools:targetApi="31">
         <activity
+            android:name=".overview"
+            android:exported="false" />
+        <activity
             android:name=".views.SettingsActivity"
             android:exported="false" />
         <activity
